@@ -158,4 +158,5 @@ export default App;
 
 const StToolbar = styled(Container)`
   background: black;
+  min-width: 100%
 `;

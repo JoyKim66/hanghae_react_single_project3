@@ -2,17 +2,18 @@ import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+
 import './App.css';
 import styled from 'styled-components';
+
+import {createUserWithEmailAndPassword} from "firebase/auth"
+import { auth, db } from './shared/firebase';
 
 
 
@@ -20,14 +21,16 @@ import styled from 'styled-components';
 const theme = createTheme();
 
 export default function SignUp() {
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
-  };
+  const signupFB = async () => {
+    console.log("ddd")
+    const user = await createUserWithEmailAndPassword(
+      auth,
+      "hwanhee123@dev.com",
+      "hwanhee123",
+      );
+    console.log('user',user)
+  }
+  
 
   return (
     <ThemeProvider theme={theme}>
@@ -47,7 +50,7 @@ export default function SignUp() {
           <Typography component="h1" variant="h5">
             Sign up
           </Typography>
-          <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+          <Box component="form" noValidate  sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <TextField
@@ -81,16 +84,19 @@ export default function SignUp() {
                   autoComplete="new-password"
                 />
               </Grid>
-             
+
             </Grid>
-            
-           <Button>
-            <button class="custom-btn btn-5"><span>Sign Up</span></button>
+           
+           </Box>
+         </Box>
+       </Container>
+          <Button>
+            <button class="custom-btn btn-5"
+            onClick={signupFB}
+            ><span>Sign Up</span></button>
            </Button>
-          </Box>
-        </Box>
-      </Container>
-    </ThemeProvider>
+     </ThemeProvider>
+     
   );
 }
 
@@ -99,4 +105,3 @@ const Button = styled.div`
     flex-direction: row;
     justify-content: center;
 `;
-
