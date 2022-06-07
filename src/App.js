@@ -15,21 +15,47 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 
 import {Routes, Route} from "react-router-dom"
+import {auth} from "./shared/firebase";
+
 
 import SignUp from './SignUp';
 import SignIn from './SignIn';
 import styled from 'styled-components';
 import Write from './Write';
+import Main from './main';
+import { onAuthStateChanged,signOut } from 'firebase/auth';
 
-const pages = [''];
+
+const pages = ['로그인','회원가입'];
 const settings = ['Logout'];
+
+const Home = () => {
+  return (
+    <div>
+      환영합니다
+    <button onClick={()=> {
+      signOut(auth)
+    }}>로그아웃</button>
+    </div>
+  )
+}
 
 
 function App() {
- 
+  const [is_login, setIsLogin] = React.useState(false);
 
- 
+  const loginCheck = async(user) => {
+    if(user) {
+      setIsLogin(true)
+    }else{
+      setIsLogin(false);
+    }
+  }
 
+  React.useEffect(() => {
+    onAuthStateChanged(auth, loginCheck);
+  },[]);
+ 
   return (
     <div className="App">
       <AppBar position="static">
@@ -85,7 +111,7 @@ function App() {
             variant="h5"
             noWrap
             component="a"
-            href="write"
+            href="/"
             sx={{
               mr: 2,
               display: { xs: 'flex', md: 'none' },
@@ -145,8 +171,13 @@ function App() {
       </AppBar>
   
       <Routes>
-        <Route path='/signup' element={<SignUp/>} />
+        {is_login? (
+          <Route path='/' element= {<Home/>}/>
+        ):(
+          <Route path='/' element= {<Main/>}/>
+        )}
         <Route path='/signin' element={<SignIn/>} />
+        <Route path='/signup' element={<SignUp/>} />
         <Route path='/write' element={<Write/>} />
       </Routes>
       
