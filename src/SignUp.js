@@ -24,6 +24,11 @@ import {collection, addDoc, getDocs, where, query} from "firebase/firestore";
 
 const theme = createTheme();
 
+const isEmail = (email) => {
+  const emailCheck = /^(([^<>()\[\].,;:\s@"]+(\.[^<>()\[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
+  return emailCheck.test(email);
+};
+
 export default function SignUp() {
   const signupFB = async (event) => {
     event.preventDefault();
@@ -33,6 +38,12 @@ export default function SignUp() {
       password: data.get('password'),
       name: data.get('NickName')
     });
+    if (!isEmail(data.get('email'))) {
+      window.alert("이메일 형식을 확인해주세요!");
+    }else if(data.get('password')!= data.get('password2')){
+      window.alert("비밀번호가 일치하지 않습니다");
+    }
+    
     const user = await createUserWithEmailAndPassword(
       auth,
       data.get('email'),
@@ -77,6 +88,7 @@ export default function SignUp() {
                 label="Email Address"
                 name="email"
                 autoComplete="email"
+                type="email"
               />
             </Grid>
             <Grid item xs={12}>
@@ -98,6 +110,17 @@ export default function SignUp() {
                 label="Password"
                 type="password"
                 id="password"
+                autoComplete="new-password"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                required
+                fullWidth
+                name="password2"
+                label="Password 확인"
+                type="password"
+                id="password2"
                 autoComplete="new-password"
               />
             </Grid>

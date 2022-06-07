@@ -9,19 +9,32 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider} from '@mui/material/styles';
 
 
+
 import styled from 'styled-components';
 import "./App.css";
-import {signInWithEmailAndPassword} from "firebase/auth";
+import {signInWithEmailAndPassword,onAuthStateChanged} from "firebase/auth";
 import { auth, db } from './shared/firebase';
 import {collection, addDoc, getDocs, where, query} from "firebase/firestore";
-
-
+import {useNavigate} from "react-router-dom";
 
 
 const theme = createTheme();
 
 
 export default function SignIn() {
+  const navigate = useNavigate();
+  const [email, setEmail] = React.useState("");
+  const [pw, setPw] = React.useState("");
+  
+  const handleEmailChange = (event) => {
+    // console.log('handleEmailChange',event)
+    setEmail(event.target.value);
+  }
+  const handlePwChange = (event) => {
+    // console.log('handlePwChange',event)
+    setPw(event.target.value);
+  }
+
   const loginFB = async(event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -46,7 +59,9 @@ export default function SignIn() {
       console.log('u.data(): ',u.data());
     })
     
-    console.log(auth.currentUser);
+    console.log('currentUser',auth.currentUser);
+
+    navigate("/")
 
   };
 
@@ -68,7 +83,9 @@ export default function SignIn() {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          <Box component="form" onSubmit={loginFB} noValidate sx={{ mt: 1 }}>
+          <Box component="form" 
+          onSubmit={loginFB} 
+          noValidate sx={{ mt: 1 }}>
             <TextField
               margin="normal"
               required
@@ -78,6 +95,9 @@ export default function SignIn() {
               name="email"
               autoComplete="email"
               autoFocus
+              onChange={handleEmailChange}
+              value={email}
+              type = "email"
             />
             <TextField
               margin="normal"
@@ -87,10 +107,13 @@ export default function SignIn() {
               label="Password"
               type="password"
               id="password"
+              onChange={handlePwChange}
+              value = {pw}
               autoComplete="current-password"
             />
             <StyledButton>
-            <button className="custom-btn btn-5" type='submit'>
+            <button className="custom-btn btn-5" 
+            type='submit' disabled={!email||!pw}>
               <span>Sign In</span></button>
            </StyledButton>
           </Box>

@@ -16,6 +16,8 @@ import AdbIcon from '@mui/icons-material/Adb';
 
 import {Routes, Route} from "react-router-dom"
 import {auth} from "./shared/firebase";
+import {useNavigate} from "react-router-dom";
+
 
 
 import SignUp from './SignUp';
@@ -23,20 +25,29 @@ import SignIn from './SignIn';
 import styled from 'styled-components';
 import Write from './Write';
 import Main from './main';
+import writebtn from "./writebtn.png"
+
 import { onAuthStateChanged,signOut } from 'firebase/auth';
 
 
-const pages = ['로그인','회원가입'];
+
+const loginPages = ['로그아웃'];
+const logoutPages = ['로그인','회원가입']
 const settings = ['Logout'];
 
-const Home = () => {
+const LogoutMain = () => {
   return (
     <div>
-      환영합니다
-    <button onClick={()=> {
-      signOut(auth)
-    }}>로그아웃</button>
+      로그아웃 페이지
     </div>
+  )
+}
+
+const LoginMain = () => {
+  return(
+  <div>
+    로그인페이지
+  </div>
   )
 }
 
@@ -49,6 +60,18 @@ function App() {
       setIsLogin(true)
     }else{
       setIsLogin(false);
+    }
+  }
+  
+  const navigate = useNavigate();
+  const pageJump = (event) => {
+    console.log(event.target.name);
+    if (event.target.name === '로그인') {
+      navigate("/signin");
+    }else if (event.target.name === '회원가입') {
+      navigate("/signup");
+    }else{
+      signOut(auth);
     }
   }
 
@@ -66,7 +89,7 @@ function App() {
             variant="h6"
             noWrap
             component="a"
-            href="/write"
+            href="/"
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
@@ -99,11 +122,15 @@ function App() {
                 display: { xs: 'block', md: 'none' },
               }}
             >
-              {pages.map((page) => (
+              {is_login? loginPages.map((page) => (
                 <MenuItem key={page} >
                   <Typography textAlign="center">{page}</Typography>
                 </MenuItem>
-              ))}
+              )): logoutPages.map((page) => (
+                <MenuItem key={page} >
+                  <Typography textAlign="center">{page}</Typography>
+                </MenuItem>
+              )) }
             </Menu>
           </Box>
           <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
@@ -126,15 +153,23 @@ function App() {
             Home
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
-              <Button
+            {is_login? loginPages.map((page) => (
+              <Button onClick={pageJump}
                 key={page}
-                
+                name={page}
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
                 {page}
               </Button>
-            ))}
+            )): logoutPages.map((page) => (
+              <Button onClick={pageJump}
+                key={page}
+                name={page}
+                sx={{ my: 2, color: 'white', display: 'block' }}
+              >
+                {page}
+              </Button>
+            )) }
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
@@ -172,9 +207,9 @@ function App() {
   
       <Routes>
         {is_login? (
-          <Route path='/' element= {<Home/>}/>
+          <Route path='/' element={<LoginMain />} />
         ):(
-          <Route path='/' element= {<Main/>}/>
+          <Route path='/' element= {<LogoutMain/>}/>
         )}
         <Route path='/signin' element={<SignIn/>} />
         <Route path='/signup' element={<SignUp/>} />
