@@ -17,6 +17,7 @@ export default function reducer(state=initialState, action= {}) {
                 text:action.post_obj.text,
                 img:action.post_obj.img,
                 time:action.post_obj.time,
+                layout_text:action.post_obj.layout_text,
             }
             const new_post_list = [...state.list,new_post_obj]; 
             console.log('reducer',new_post_list);

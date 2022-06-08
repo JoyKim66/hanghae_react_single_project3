@@ -26,8 +26,10 @@ import styled from 'styled-components';
 import Write from './Write';
 import Main from './Main';
 import { LoginMain } from './Main';
+import Detail from './Detail';
 
 import { onAuthStateChanged,signOut } from 'firebase/auth';
+import ViewTest from './ViewTest';
 
 
 
@@ -198,6 +200,7 @@ function App() {
         <Route path='/signin' element={<SignIn/>} />
         <Route path='/signup' element={<SignUp/>} />
         <Route path='/write' element={<Write/>} />
+        <Route path='/detail/:idx' element={<Detail/>} />
       </Routes>
       
     </div>

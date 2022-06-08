@@ -17,8 +17,10 @@ const Write = () => {
 
     const file_link_ref = React.useRef(null);
     let file_link = "";
+    let layout_text = "";
     const text_ref = React.useRef(null);
     const dispatch = useDispatch();
+    const radio_ref = React.useRef(null);
 
     let today = new Date(); 
     let time = {
@@ -53,6 +55,11 @@ const Write = () => {
         console.log(images_doc.id);
     }
 
+    const radioClicked = (e) => {
+      console.log('event: ', e.target.id);
+      layout_text = e.target.id
+    }
+
     const addPost = async(e) => {
         const user_docs = await getDocs(
         query(collection(db,"users"),
@@ -73,6 +80,8 @@ const Write = () => {
         text: text_ref.current?.value,
         img: file_link,
         time: timestring,
+        layout_text: layout_text,
+
     }
     console.log("user_data_obj: ",user_data_obj)
     
@@ -86,11 +95,29 @@ const Write = () => {
             <Box>
                 게시글 작성
                 <Box>
-                    <hr></hr>
+                    <hr/>
                     레이아웃 고르기<br/>
                     <input type="text" value="사진을 선택해주세요"/>
-                    
                     <input type="file" onChange={uploadFB}/>
+                    <div>
+                        <input type="radio" id="left"
+                        name="layout_text" value="1" 
+                        ref = {radio_ref} onClick={radioClicked} />
+                        <label for="1">오른쪽에 이미지 왼쪽에 텍스트</label>
+                    </div>
+                    <div>
+                        <input type="radio" id="right"
+                        name="layout_text" value="2"
+                        ref = {radio_ref} onClick={radioClicked}/>
+                        <label for="2">왼쪽에 이미지 오른쪽에 텍스트</label>
+                    </div>
+                    <div>
+                        <input type="radio" id="up"
+                        name="layout_text" value="3"
+                        ref = {radio_ref} onClick={radioClicked}/>
+                        <label for="3">상단에 텍스트 하단에 이미지</label>
+                    </div>
+                     
                 </Box>
                 <Box>
                     <hr></hr>

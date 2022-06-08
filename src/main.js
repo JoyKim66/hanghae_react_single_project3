@@ -19,7 +19,9 @@ const Main = () => {
      return (
         <ImageList sx={{ width: 1000, height: 1000 }}>
           {post_list.map((item,idx) => (
-            <ImageListItem key={idx}>
+            <ImageListItem key={idx} onClick={()=>{
+                navigate("/detail/" + idx)
+            }}>
               <img
                 src={`${item.img}?w=248&fit=crop&auto=format`}
                 srcSet={`${item.img}?w=248&fit=crop&auto=format&dpr=2 2x`}
