@@ -24,8 +24,8 @@ import SignUp from './SignUp';
 import SignIn from './SignIn';
 import styled from 'styled-components';
 import Write from './Write';
-import writebtn from "./writebtn.png"
-import {Post} from "./Write";
+import Main from './Main';
+import { LoginMain } from './Main';
 
 import { onAuthStateChanged,signOut } from 'firebase/auth';
 
@@ -34,39 +34,6 @@ import { onAuthStateChanged,signOut } from 'firebase/auth';
 const loginPages = ['로그아웃'];
 const logoutPages = ['로그인','회원가입']
 const settings = ['Logout'];
-
-const Main = () => {
-
-  return (
-      <div>
-          <div>메인페이지</div>
-          <AddButton>
-              <Img src={writebtn} />    
-          </AddButton>
-
-      </div>
-      
-  )
-}
-const AddButton = styled.div`
-display: flex;
-flex-direction: row;
-justify-content: flex-end;
-`;
-const Img = styled.img`
-max-width: 60px;
-min-height: 60px;
-position: fixed;
-top: 75%;
-`;
-
-const LoginMain = () => {
-  return(
-  <div>
-    로그인페이지
-  </div>
-  )
-}
 
 
 function App() {
@@ -224,9 +191,9 @@ function App() {
   
       <Routes>
         {is_login? (
-          <Route path='/' element={<LoginMain />} />
+          <Route path='/' element={<Main />} />
         ):(
-          <Route path='/' element= {<Main/>}/>
+          <Route path='/' element= {<LoginMain/>}/>
         )}
         <Route path='/signin' element={<SignIn/>} />
         <Route path='/signup' element={<SignUp/>} />
