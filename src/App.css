@@ -1,7 +1,4 @@
-button {
-  margin: 20px;
-  outline: none;
-}
+
 .custom-btn {
   width: 130px;
   height: 40px;
@@ -52,4 +49,9 @@ button {
 .btn-5:hover:after{
   width:100%;
   transition:800ms ease all;
+}
+
+.css-zpxbs6-MuiImageList-root {
+  overflow-y: visible !important;
+  margin: auto;
 }

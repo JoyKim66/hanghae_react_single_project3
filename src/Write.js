@@ -71,9 +71,7 @@ const Write = () => {
     const addPost = async(e) => {
         const user_docs = await getDocs(
         query(collection(db,"users"),
-        where("user_id" , "==" , auth.currentUser.email)
-        )
-        )
+        where("user_id" , "==" , auth.currentUser.email)))
         // console.log(auth.currentUser.email); //user이메일가져올부분
         
         user_docs.forEach((u)=>{
@@ -94,7 +92,7 @@ const Write = () => {
         // console.log("user_data_obj: ",user_data_obj)
         
         dispatch(createPostFB(user_data_obj));   
-        // navigate("/") ;
+        navigate("/") ;
     }
     const editPost = () => {
         const user_update_data_obj = {
@@ -145,13 +143,13 @@ const Write = () => {
                     <hr></hr>
                     게시물 내용<br/>
                     <input ref={text_ref} style={{width:"80vw",height:"200px"}} type="text" />
-                    <button onClick={addPost}>작성</button>
+                    {write_idx?
                     <button onClick={editPost}>수정</button>
+                    :
+                    <button onClick={addPost}>작성</button>}
                 </Box>
             </Box>
-
         </div>
-
     )
 }
 
@@ -160,6 +158,5 @@ export default Write;
 const Box = styled.div`
     width: 100%;
     min-height: 30vh;
-    background: #eee;
 `;
 

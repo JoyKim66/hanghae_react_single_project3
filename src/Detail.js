@@ -3,6 +3,9 @@ import styled from "styled-components";
 import {useDispatch,useSelector} from "react-redux";
 import { useNavigate, useParams } from 'react-router-dom';
 import { deletePostFB, postDelete } from './redux/modules/post';
+import {auth} from "./shared/firebase";
+import "./App.css"
+
 
 import Avatar from '@mui/material/Avatar';
 
@@ -11,6 +14,7 @@ const Detail = () => {
     const post_index = useParams().idx;
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    console.log(post_list[post_index]);
     console.log(post_list[post_index].id);
     const post_id = post_list[post_index].id
 
@@ -18,23 +22,27 @@ const Detail = () => {
         dispatch(deletePostFB(post_list,post_id));
         navigate("/");
     }
+
     return (
         <>
         <Box>
+            <NameBox>
+                <Avatar alt="bboshi" src="./avatar.jpg" />
+                {post_list[post_index]?.user_name}<br/>
+            </NameBox>
             <div>
                 {post_list[post_index]?.time}<br/>
             </div>
-            <div>
-                <Avatar alt="bboshi" src="./avatar.jpg" />
-                {post_list[post_index]?.user_name}<br/>
-            </div>
-            <div>
-                <button onClick={()=>{
-                    navigate("/write/"+ post_index )
-                }}>수정</button>
-                <button onClick={deletePost}>삭제</button>
-            </div>
         </Box>
+            {post_list[post_index].user_email === auth.currentUser?.email?
+                <ButtonBox>
+                    <Button className="custom-btn btn-5" onClick={() => {
+                        navigate("/write/"+ post_index )
+                    }}>수정</Button>
+                    <Button className="custom-btn btn-5" onClick={deletePost}>삭제</Button>
+                </ButtonBox>
+            : null}
+        
         {(post_list[post_index].layout_text === 'left') ? 
         <Container>
             <TextBox>
@@ -74,7 +82,19 @@ export default Detail;
 
 const Box = styled.div`
     width: 100%;
-    min-height: 30vh;
+    min-height: 10vh;
+    display: flex;
+    justify-content: space-between;
+`;
+const NameBox = styled.div`
+    margin: 1vh 1vw;
+`;
+const Button = styled.button`
+    margin:10px
+`
+const ButtonBox = styled.div`
+    display: flex;
+    justify-content: flex-end;
 `;
 const Container = styled.div`
     display:flex;
@@ -89,6 +109,8 @@ const TextBox = styled.div`
     display:flex;
     align-items: center;
     justify-content: center;
+    border: 1px solid #eee;
+    
 `;
 const TextBox2 = styled.div`
     width: 100%;
@@ -96,6 +118,7 @@ const TextBox2 = styled.div`
     display:flex;
     align-items: center;
     justify-content: center;
+    border: 1px solid #eee;
 `;
 const ImgBox = styled.div`
     width: 50%;

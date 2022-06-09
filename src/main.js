@@ -1,4 +1,5 @@
 import * as React from 'react';
+import './App.css';
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
 import ImageListItemBar from '@mui/material/ImageListItemBar';
@@ -6,6 +7,7 @@ import ImageListItemBar from '@mui/material/ImageListItemBar';
 import { useSelector,useDispatch} from "react-redux";
 import {useNavigate} from "react-router-dom";
 
+import { auth } from './shared/firebase';
 
 
 import styled from "styled-components";
@@ -20,10 +22,10 @@ const Main = () => {
 
     React.useEffect(()=> {
       dispatch(loadPostFB());
-    },[])
+    },[]);
      
      return (
-        <ImageList sx={{ width: 1000, height: 1000 }}>
+        <Container sx={{ width: 1000, height: 1000 }}>
           {post_list.map((item,idx) => (
             <ImageListItem key={idx} onClick={()=>{
                 navigate("/detail/" + idx)
@@ -41,12 +43,14 @@ const Main = () => {
               />
             </ImageListItem>
           ))}
+          {auth.currentUser?
           <AddButton>
             <Img src={writebtn} onClick={()=>{
                 navigate("/write")
             }}/>    
           </AddButton>
-        </ImageList>
+          :null}
+        </Container>
 
         
       );
@@ -54,17 +58,6 @@ const Main = () => {
 
 
 export default Main;
-
-export const LoginMain = () => {
-    return(
-      <div>
-        <div>메인페이지</div>
-      <AddButton>
-          <Img src={writebtn} />    
-      </AddButton>
-    </div>
-    )
-  }
 
 
 const AddButton = styled.div`
@@ -78,5 +71,11 @@ const Img = styled.img`
   position: fixed;
   top: 85%;
   left: 90%;
-
+`;
+const Container = styled(ImageList)`
+  width: 80%;
+  height: auto;
+  margin:auto;
+  overflow-y: visible !important;
+  }
 `;

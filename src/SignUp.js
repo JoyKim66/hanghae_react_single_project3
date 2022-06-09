@@ -1,6 +1,5 @@
 import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import Link from '@mui/material/Link';
@@ -126,7 +125,9 @@ export default function SignUp() {
             </Grid>
           </Grid>
           <Button2>
-          <button className="custom-btn btn-5" type="submit"
+          <button className="custom-btn btn-5" type="submit" onClick={() => {
+            window.alert('환영합니다')
+          }}
           ><span>Sign Up</span></button>
           </Button2>
           <Grid container justifyContent="flex-end">

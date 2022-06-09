@@ -1,12 +1,11 @@
 import './App.css';
-import React from "react";
+import React, { useEffect } from "react";
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
@@ -14,11 +13,9 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 
-import {Routes, Route} from "react-router-dom"
-import {auth} from "./shared/firebase";
-import {useNavigate} from "react-router-dom";
-
-
+import {Routes, Route,useNavigate} from "react-router-dom"
+import {auth,db} from "./shared/firebase";
+import {collection, addDoc, getDocs, where, query} from "firebase/firestore";
 
 import SignUp from './SignUp';
 import SignIn from './SignIn';
@@ -27,20 +24,20 @@ import Write from './Write';
 import Main from './Main';
 import { LoginMain } from './Main';
 import Detail from './Detail';
-import Update from './Update';
 
 import { onAuthStateChanged,signOut } from 'firebase/auth';
 
 
 
+let user_name = ""  
 const loginPages = ['로그아웃'];
 const logoutPages = ['로그인','회원가입']
 const settings = ['Logout'];
 
 
+
 function App() {
   const [is_login, setIsLogin] = React.useState(false);
-
   const loginCheck = async(user) => {
     if(user) {
       setIsLogin(true)
@@ -48,7 +45,10 @@ function App() {
       setIsLogin(false);
     }
   }
+      
   
+
+  console.log(auth.currentUser);
   const navigate = useNavigate();
   const pageJump = (event) => {
     console.log(event.target.name);
@@ -64,6 +64,24 @@ function App() {
   React.useEffect(() => {
     onAuthStateChanged(auth, loginCheck);
   },[]);
+
+  React.useEffect(() => {
+    async function getUserName() {
+      const user_docs = await getDocs(
+        query(collection(db,"users"),
+        where("user_id" , "==" , auth.currentUser?.email)))
+        console.log('user_docs',user_docs)
+        user_docs.forEach((u)=>{
+            user_name = (u.data().name);
+            console.log("user_name",user_name)
+            console.log(loginPages);
+            loginPages.push(user_name)
+        })
+    }
+    getUserName()
+  },[auth.currentUser?.email]);
+
+ 
  
   return (
     <div className="App">
@@ -192,11 +210,7 @@ function App() {
       </AppBar>
   
       <Routes>
-        {is_login? (
-          <Route path='/' element={<Main />} />
-        ):(
-          <Route path='/' element= {<LoginMain/>}/>
-        )}
+        <Route path='/' element={<Main />} />
         <Route path='/signin' element={<SignIn/>} />
         <Route path='/signup' element={<SignUp/>} />
         <Route path='/write' element={<Write/>} />

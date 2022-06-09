@@ -58,9 +58,8 @@ export default function SignIn() {
     user_docs.forEach((u) => {
       console.log('u.data(): ',u.data());
     })
-    
     console.log('currentUser',auth.currentUser);
-
+    
     navigate("/")
 
   };
