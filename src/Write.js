@@ -5,8 +5,8 @@ import {auth,db,storage} from "./shared/firebase";
 import {collection, addDoc, getDocs, where, query} from "firebase/firestore";
 import {ref, uploadBytes,getDownloadURL} from "firebase/storage"
 
-import {useDispatch} from "react-redux";
-import { createPost,postDelete, updatePost } from "./redux/modules/post";
+import {useDispatch, useSelector} from "react-redux";
+import { createPost,createPostFB,postDelete, updatePost, updatePostFB } from "./redux/modules/post";
 import {useNavigate, useParams} from "react-router-dom";
 
 
@@ -15,7 +15,9 @@ import {useNavigate, useParams} from "react-router-dom";
 const Write = () => {
     const navigate = useNavigate();
     const write_idx = useParams().idx;
-    
+    const id_post_list = useSelector((state)=>state.post.list);
+    console.log('id_post_list',id_post_list)
+    // console.log(write_idx);
 
     const file_link_ref = React.useRef(null);
     let file_link = "";
@@ -35,13 +37,13 @@ const Write = () => {
     };
     let timestring = `${time.year}/${time.month}/${time.date} ${time.hours}:${time.minutes}`;
 
-    console.log(auth.currentUser); //user 아이디 가져올때 쓸것
+    console.log('로그인확인용',auth.currentUser); //user 아이디 가져올때 쓸것
 
    
     
 
     const uploadFB = async(e) => {
-        console.log(e.target.files);
+        // console.log(e.target.files);
         const uploaded_file = await uploadBytes(
             ref(storage,`images/${e.target.files[0].name}`),
             e.target.files[0]
@@ -58,11 +60,11 @@ const Write = () => {
             image_url: file_link_ref.current?.url,
         }
         );
-        console.log(images_doc.id);
+        console.log('images_doc_id',images_doc.id);
     }
 
     const radioClicked = (e) => {
-      console.log('event: ', e.target.id);
+    //   console.log('event: ', e.target.id);
       layout_text = e.target.id
     }
 
@@ -72,13 +74,13 @@ const Write = () => {
         where("user_id" , "==" , auth.currentUser.email)
         )
         )
-        console.log(auth.currentUser.email); //user이메일가져올부분
+        // console.log(auth.currentUser.email); //user이메일가져올부분
         
         user_docs.forEach((u)=>{
             user_name = u.data().name
 
         })
-        console.log(user_name);//user name 가져올부분
+        // console.log(user_name);//user name 가져올부분
 
         const user_data_obj = {
             user_email:auth.currentUser.email, 
@@ -89,15 +91,12 @@ const Write = () => {
             layout_text: layout_text,
         }
 
+        // console.log("user_data_obj: ",user_data_obj)
         
-        console.log("user_data_obj: ",user_data_obj)
-        
-
-        dispatch(createPost(user_data_obj));   
-        navigate("/") ;
+        dispatch(createPostFB(user_data_obj));   
+        // navigate("/") ;
     }
     const editPost = () => {
-        console.log("edit")
         const user_update_data_obj = {
             user_email:auth.currentUser.email, 
             user_name:user_name ,
@@ -107,8 +106,11 @@ const Write = () => {
             layout_text: layout_text,
             idx: write_idx,
         }
-        dispatch(updatePost(user_update_data_obj));
+        const post_id = id_post_list[write_idx].id
+        
+        dispatch(updatePostFB(user_update_data_obj,post_id));
         navigate("/");
+
     }
     
     return (

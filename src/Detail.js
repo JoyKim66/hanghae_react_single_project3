@@ -2,7 +2,7 @@ import * as React from 'react';
 import styled from "styled-components";
 import {useDispatch,useSelector} from "react-redux";
 import { useNavigate, useParams } from 'react-router-dom';
-import { postDelete } from './redux/modules/post';
+import { deletePostFB, postDelete } from './redux/modules/post';
 
 import Avatar from '@mui/material/Avatar';
 
@@ -11,13 +11,13 @@ const Detail = () => {
     const post_index = useParams().idx;
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    console.log(post_list);
+    console.log(post_list[post_index].id);
+    const post_id = post_list[post_index].id
 
     const deletePost = () => { 
-        dispatch(postDelete(post_list,post_index));
+        dispatch(deletePostFB(post_list,post_id));
         navigate("/");
     }
-
     return (
         <>
         <Box>
