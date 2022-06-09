@@ -6,18 +6,21 @@ import {collection, addDoc, getDocs, where, query} from "firebase/firestore";
 import {ref, uploadBytes,getDownloadURL} from "firebase/storage"
 
 import {useDispatch} from "react-redux";
-import { createPost } from "./redux/modules/post";
-import {useNavigate} from "react-router-dom";
+import { createPost,postDelete, updatePost } from "./redux/modules/post";
+import {useNavigate, useParams} from "react-router-dom";
 
 
 
 
 const Write = () => {
     const navigate = useNavigate();
+    const write_idx = useParams().idx;
+    
 
     const file_link_ref = React.useRef(null);
     let file_link = "";
     let layout_text = "";
+    let user_name = ""
     const text_ref = React.useRef(null);
     const dispatch = useDispatch();
     const radio_ref = React.useRef(null);
@@ -33,6 +36,9 @@ const Write = () => {
     let timestring = `${time.year}/${time.month}/${time.date} ${time.hours}:${time.minutes}`;
 
     console.log(auth.currentUser); //user 아이디 가져올때 쓸것
+
+   
+    
 
     const uploadFB = async(e) => {
         console.log(e.target.files);
@@ -65,35 +71,49 @@ const Write = () => {
         query(collection(db,"users"),
         where("user_id" , "==" , auth.currentUser.email)
         )
-    )
-    console.log(auth.currentUser.email); //user이메일가져올부분
-    let user_name = ""
-    user_docs.forEach((u)=>{
-        user_name = u.data().name
+        )
+        console.log(auth.currentUser.email); //user이메일가져올부분
+        
+        user_docs.forEach((u)=>{
+            user_name = u.data().name
 
-    })
-    console.log(user_name);//user name 가져올부분
+        })
+        console.log(user_name);//user name 가져올부분
 
-    const user_data_obj = {
-        user_email:auth.currentUser.email, 
-        user_name:user_name ,
-        text: text_ref.current?.value,
-        img: file_link,
-        time: timestring,
-        layout_text: layout_text,
+        const user_data_obj = {
+            user_email:auth.currentUser.email, 
+            user_name:user_name ,
+            text: text_ref.current?.value,
+            img: file_link,
+            time: timestring,
+            layout_text: layout_text,
+        }
 
+        
+        console.log("user_data_obj: ",user_data_obj)
+        
+
+        dispatch(createPost(user_data_obj));   
+        navigate("/") ;
     }
-    console.log("user_data_obj: ",user_data_obj)
+    const editPost = () => {
+        console.log("edit")
+        const user_update_data_obj = {
+            user_email:auth.currentUser.email, 
+            user_name:user_name ,
+            text: text_ref.current?.value,
+            img: file_link,
+            time: timestring,
+            layout_text: layout_text,
+            idx: write_idx,
+        }
+        dispatch(updatePost(user_update_data_obj));
+        navigate("/");
+    }
     
-
-    dispatch(createPost(user_data_obj));   
-    navigate("/") 
-}
-
     return (
         <div>
             <Box>
-                게시글 작성
                 <Box>
                     <hr/>
                     레이아웃 고르기<br/>
@@ -123,7 +143,8 @@ const Write = () => {
                     <hr></hr>
                     게시물 내용<br/>
                     <input ref={text_ref} style={{width:"80vw",height:"200px"}} type="text" />
-                    <button onClick={addPost}>게시글작성</button>
+                    <button onClick={addPost}>작성</button>
+                    <button onClick={editPost}>수정</button>
                 </Box>
             </Box>
 

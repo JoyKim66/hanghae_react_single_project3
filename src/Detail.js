@@ -1,15 +1,22 @@
 import * as React from 'react';
 import styled from "styled-components";
 import {useDispatch,useSelector} from "react-redux";
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { postDelete } from './redux/modules/post';
 
 import Avatar from '@mui/material/Avatar';
-import Stack from '@mui/material/Stack';
 
 const Detail = () => {
     const post_list = useSelector(state=>state.post.list);
     const post_index = useParams().idx;
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
     console.log(post_list);
+
+    const deletePost = () => { 
+        dispatch(postDelete(post_list,post_index));
+        navigate("/");
+    }
 
     return (
         <>
@@ -22,8 +29,10 @@ const Detail = () => {
                 {post_list[post_index]?.user_name}<br/>
             </div>
             <div>
-                <button>수정</button>
-                <button>삭제</button>
+                <button onClick={()=>{
+                    navigate("/write/"+ post_index )
+                }}>수정</button>
+                <button onClick={deletePost}>삭제</button>
             </div>
         </Box>
         {(post_list[post_index].layout_text === 'left') ? 
